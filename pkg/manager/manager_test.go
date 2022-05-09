@@ -20,7 +20,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"path"
@@ -1186,7 +1186,7 @@ var _ = Describe("manger.Manager", func() {
 				defer resp.Body.Close()
 				Expect(resp.StatusCode).To(Equal(200))
 
-				data, err := ioutil.ReadAll(resp.Body)
+				data, err := io.ReadAll(resp.Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(data)).To(ContainSubstring("%s\n%s\n%s\n",
 					`# HELP test_one test metric for testing`,
@@ -1229,7 +1229,7 @@ var _ = Describe("manger.Manager", func() {
 				defer resp.Body.Close()
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
-				body, err := ioutil.ReadAll(resp.Body)
+				body, err := io.ReadAll(resp.Body)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(string(body)).To(Equal("Some debug info"))
 			})
@@ -1804,12 +1804,6 @@ type startSignalingInformer struct {
 	// WaitForCacheSync returned, just like a real cache.
 	wasSynced bool
 	cache.Cache
-}
-
-func (c *startSignalingInformer) started() bool {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	return c.wasStarted
 }
 
 func (c *startSignalingInformer) Start(ctx context.Context) error {
