@@ -78,7 +78,7 @@ func (f *ControlPlane) Start() (retErr error) {
 	// provision the default user -- can be removed when the related
 	// methods are removed.  The default user has admin permissions to
 	// mimic legacy no-authz setups.
-	user, err := f.AddUser(User{Name: "default", Groups: []string{"system:masters"}}, &rest.Config{})
+	user, err := f.AddUser(User{Name: "default", Groups: []string{"system:masters"}}, nil)
 	if err != nil {
 		return fmt.Errorf("unable to provision the default (legacy) user: %w", err)
 	}
