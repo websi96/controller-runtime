@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
 
 	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/rest"
@@ -204,7 +205,8 @@ func (u *AuthenticatedUser) Kubectl() (*KubeCtl, error) {
 	}
 
 	// cleaning this up is handled when our tmpDir is deleted
-	out, err := os.CreateTemp(u.plane.APIServer.CertDir, "*.kubecfg")
+	//out, err := os.CreateTemp(u.plane.APIServer.CertDir, "*.kubecfg")
+	out, err := os.Create(filepath.Join(u.plane.APIServer.CertDir, "kubeconfig"))
 	if err != nil {
 		return nil, fmt.Errorf("unable to create file for kubeconfig: %w", err)
 	}
