@@ -18,6 +18,7 @@ package controlplane
 
 import (
 	"fmt"
+	"net"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -241,7 +242,13 @@ func (f *ControlPlane) AddUser(user User, baseConfig *rest.Config) (*Authenticat
 	}
 
 	if baseConfig == nil {
-		baseConfig = &rest.Config{}
+		baseConfig = &rest.Config{
+			Host: (&url.URL{
+				Scheme: "https",
+				Host:   net.JoinHostPort("127.0.0.1", f.GetAPIServer().Port),
+				Path:   "/",
+			}).String(),
+		}
 	}
 	cfg, err := f.GetAPIServer().SecureServing.AddUser(user, baseConfig)
 	if err != nil {
