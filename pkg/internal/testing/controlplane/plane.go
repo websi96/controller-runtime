@@ -173,7 +173,9 @@ func (u *AuthenticatedUser) Config() *rest.Config {
 	}
 
 	u.cfg.CAData = u.plane.APIServer.SecureServing.CA
-	u.cfg.Host = u.plane.APIServer.SecureServing.URL("https", "/").String()
+	if u.cfg.Host == "" {
+		u.cfg.Host = u.plane.APIServer.SecureServing.URL("https", "/").String()
+	}
 	u.cfgIsComplete = true
 	return u.cfg
 }
