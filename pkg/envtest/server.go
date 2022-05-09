@@ -263,6 +263,7 @@ func (te *Environment) Start() (*rest.Config, error) {
 
 		// Create the *rest.Config for creating new clients
 		baseConfig := &rest.Config{
+			Host: "127.0.0.1",
 			// gotta go fast during tests -- we don't really care about overwhelming our test API server
 			QPS:   1000.0,
 			Burst: 2000.0,
