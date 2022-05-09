@@ -211,14 +211,34 @@ func (u *AuthenticatedUser) Kubectl() (*KubeCtl, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to create file for kubeconfig: %w", err)
 	}
+	keyOut, err := os.Create(filepath.Join(u.plane.APIServer.CertDir, "client.key"))
+	if err != nil {
+		return nil, fmt.Errorf("unable to create file for kubeconfig: %w", err)
+	}
+	certOut, err := os.Create(filepath.Join(u.plane.APIServer.CertDir, "client.crt"))
+	if err != nil {
+		return nil, fmt.Errorf("unable to create file for kubeconfig: %w", err)
+	}
 	defer out.Close()
-	contents, err := KubeConfigFromREST(u.Config())
+	defer keyOut.Close()
+	defer certOut.Close()
+
+	cfg := u.Config()
+	contents, err := KubeConfigFromREST(cfg)
 	if err != nil {
 		return nil, err
 	}
+
 	if _, err := out.Write(contents); err != nil {
 		return nil, fmt.Errorf("unable to write kubeconfig to disk at %s: %w", out.Name(), err)
 	}
+	if _, err := keyOut.Write(cfg.KeyData); err != nil {
+		return nil, fmt.Errorf("unable to write KeyData to disk at %s: %w", out.Name(), err)
+	}
+	if _, err := certOut.Write(cfg.CertData); err != nil {
+		return nil, fmt.Errorf("unable to write CertData to disk at %s: %w", out.Name(), err)
+	}
+
 	k := &KubeCtl{
 		Path: u.plane.KubectlPath,
 	}
