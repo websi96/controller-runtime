@@ -7,6 +7,7 @@ linters:
   - depguard
   - dogsled
   - errcheck
+  - errorlint
   - exportloopref
   - goconst
   - gocritic
@@ -34,6 +35,7 @@ linters:
   - typecheck
   - unconvert
   - unparam
+  - unused
   - varcheck
   - whitespace
 
@@ -62,6 +64,10 @@ linters-settings:
     go: "1.18"
   stylecheck:
     go: "1.18"
+  depguard:
+    include-go-root: true
+    packages:
+      - io/ioutil # https://go.dev/doc/go1.16#ioutil
 
 issues:
   max-same-issues: 0
